@@ -2,6 +2,7 @@
 
 ## 목차
 
+- [왜 우리는 AI의 내부를 깊이 이해해야 하는가?](./intro.md)
 - [RAG의 모든 것](#RAG의-모든-것)
   - [1. AI와 언어모델 기초 이해](#1-AI와-언어모델-기초-이해)
     - [1.1 NLP, Natural Language Processing(자연어 처리)란 무엇인가?](#11-NLP-Natural-Language-Processing자연어-처리란-무엇인가)
