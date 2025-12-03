@@ -46,12 +46,12 @@ from utils import (
 def download_nltk_data():
     """필요한 NLTK 데이터 다운로드"""
     try:
-        nltk.data.find('tokenizers/punkt')
+        nltk.data.find('tokenizers/punkt_tab')
         nltk.data.find('corpora/stopwords')
         nltk.data.find('corpora/wordnet')
     except LookupError:
         print("NLTK 데이터 다운로드 중...")
-        nltk.download('punkt')
+        nltk.download('punkt_tab')
         nltk.download('stopwords')
         nltk.download('wordnet')
         nltk.download('omw-1.4')
