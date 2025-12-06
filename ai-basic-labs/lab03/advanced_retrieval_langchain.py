@@ -406,6 +406,61 @@ class Reranker:
             대안: BAAI/bge-reranker-base (고성능, ~500MB)
         """
         print(f"[...] Re-ranker 모델 로딩 중... ({model_name})")
+        
+        # HuggingFace SSL 검증 우회 설정 (여러 방법 적용)
+        import ssl
+        import os
+        import warnings
+        
+        # 1. SSL 기본 컨텍스트를 검증하지 않는 모드로 변경
+        try:
+            _create_unverified_https_context = ssl._create_unverified_context
+        except AttributeError:
+            pass
+        else:
+            ssl._create_default_https_context = _create_unverified_https_context
+        
+        # 2. 환경 변수로 인증서 검증 비활성화
+        os.environ['CURL_CA_BUNDLE'] = ''
+        os.environ['REQUESTS_CA_BUNDLE'] = ''
+        os.environ['SSL_CERT_FILE'] = ''
+        
+        # 3. urllib3 경고 억제
+        warnings.filterwarnings('ignore', message='Unverified HTTPS request')
+        
+        # 4. requests 세션의 SSL 검증 비활성화 (가장 효과적)
+        import requests
+        from requests.adapters import HTTPAdapter
+        from urllib3.util.retry import Retry
+        from urllib3.poolmanager import PoolManager
+        
+        class SSLAdapter(HTTPAdapter):
+            def init_poolmanager(self, *args, **kwargs):
+                kwargs['ssl_version'] = ssl.PROTOCOL_TLS
+                kwargs['cert_reqs'] = ssl.CERT_NONE
+                return super().init_poolmanager(*args, **kwargs)
+        
+        # requests의 기본 세션 수정
+        session = requests.Session()
+        session.verify = False
+        adapter = SSLAdapter()
+        session.mount('https://', adapter)
+        session.mount('http://', adapter)
+        
+        # huggingface_hub이 사용할 세션 패치
+        try:
+            from huggingface_hub import configure_http_backend
+            configure_http_backend(backend_factory=lambda: session)
+        except:
+            pass
+        
+        # 5. urllib3의 SSL 경고 완전히 제거
+        try:
+            import urllib3
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+        except:
+            pass
+        
         self.model = CrossEncoder(model_name)
         print("[OK] Re-ranker 준비 완료")
     
@@ -474,7 +529,13 @@ class MultiHopRetriever:
         """
         self.retriever = retriever
         self.reranker = reranker
-        self.llm = llm or ChatOpenAI(model="gpt-4o-mini", temperature=0)
+        # SSL 검증 우회 설정이 적용된 LLM 생성
+        if llm is None:
+            import httpx
+            http_client = httpx.Client(verify=False)
+            self.llm = ChatOpenAI(model="gpt-4o-mini", temperature=0, http_client=http_client)
+        else:
+            self.llm = llm
         
         # 쿼리 분해 프롬프트
         self.decompose_prompt = ChatPromptTemplate.from_template(
@@ -705,10 +766,14 @@ class AdvancedRAGSystem:
         self.use_reranker = use_reranker
         
         # 컴포넌트 초기화
+        import httpx
+        # SSL 인증서 검증 우회 설정 (회사 방화벽 등으로 인한 인증서 문제 해결)
+        http_client = httpx.Client(verify=False)
+        
         self.doc_processor = DocumentProcessor(chunk_size=chunk_size)
-        self.embeddings = OpenAIEmbeddings()
-        self.llm = ChatOpenAI(model=model, temperature=0)
-        self.client = OpenAI()
+        self.embeddings = OpenAIEmbeddings(http_client=http_client)
+        self.llm = ChatOpenAI(model=model, temperature=0, http_client=http_client)
+        self.client = OpenAI(http_client=http_client)
         
         self.retriever = None
         self.reranker = None

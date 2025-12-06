@@ -24,6 +24,15 @@ from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 from openai import OpenAI
 from dotenv import load_dotenv
+import ssl
+
+# SSL 인증서 검증 비활성화 (NLTK 다운로드용)
+try:
+    _create_unverified_https_context = ssl._create_unverified_context
+except AttributeError:
+    pass
+else:
+    ssl._create_default_https_context = _create_unverified_https_context
 
 # 프로젝트 루트의 .env 파일 로드
 project_root = Path(__file__).parent.parent
@@ -45,17 +54,34 @@ from utils import (
 
 def download_nltk_data():
     """필요한 NLTK 데이터 다운로드"""
-    try:
-        nltk.data.find('tokenizers/punkt_tab')
-        nltk.data.find('corpora/stopwords')
-        nltk.data.find('corpora/wordnet')
-    except LookupError:
-        print("NLTK 데이터 다운로드 중...")
-        nltk.download('punkt_tab')
-        nltk.download('stopwords')
-        nltk.download('wordnet')
-        nltk.download('omw-1.4')
-        print("다운로드 완료!")
+    print("\n[INFO] NLTK 데이터 확인 중...")
+    
+    resources = [
+        ('tokenizers/punkt_tab', 'punkt_tab'),
+        ('corpora/stopwords', 'stopwords'),
+        ('corpora/wordnet', 'wordnet'),
+        ('corpora/omw-1.4', 'omw-1.4'),
+    ]
+    
+    download_needed = False
+    
+    for path, name in resources:
+        try:
+            nltk.data.find(path)
+            print(f"  [OK] '{name}' 이미 설치됨")
+        except LookupError:
+            print(f"  [!] '{name}' 없음 - 다운로드 시작...")
+            download_needed = True
+            result = nltk.download(name)
+            if result:
+                print(f"  [OK] '{name}' 다운로드 완료")
+            else:
+                print(f"  [X] '{name}' 다운로드 실패!")
+    
+    if not download_needed:
+        print("\n[OK] 모든 NLTK 데이터가 이미 준비되어 있습니다!")
+    else:
+        print("\n[OK] NLTK 데이터 다운로드 완료!")
 
 
 # ============================================================================
@@ -319,7 +345,13 @@ class EmbeddingGenerator:
     """OpenAI 임베딩 생성기"""
     
     def __init__(self, api_key: str = None):
-        self.client = OpenAI(api_key=api_key or os.getenv("OPENAI_API_KEY"))
+        import httpx
+        # SSL 인증서 검증 우회 설정 (회사 방화벽 등으로 인한 인증서 문제 해결)
+        http_client = httpx.Client(verify=False)
+        self.client = OpenAI(
+            api_key=api_key or os.getenv("OPENAI_API_KEY"),
+            http_client=http_client
+        )
         self.model = "text-embedding-3-small"
     
     def get_embedding(self, text: str) -> List[float]:

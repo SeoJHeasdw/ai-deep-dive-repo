@@ -373,7 +373,13 @@ class RAGSystem:
     
     def __init__(self, collection_name: str = "rag_documents"):
         """RAG 시스템 초기화"""
-        self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        import httpx
+        # SSL 인증서 검증 우회 설정 (회사 방화벽 등으로 인한 인증서 문제 해결)
+        http_client = httpx.Client(verify=False)
+        self.client = OpenAI(
+            api_key=os.getenv("OPENAI_API_KEY"),
+            http_client=http_client
+        )
         self.embedding_model = "text-embedding-3-small"
         self.chat_model = "gpt-4o-mini"
         
@@ -658,7 +664,13 @@ class ContextManager:
     def __init__(self, model: str = "gpt-4o-mini"):
         self.model = model
         self.encoding = tiktoken.encoding_for_model(model)
-        self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        import httpx
+        # SSL 인증서 검증 우회 설정
+        http_client = httpx.Client(verify=False)
+        self.client = OpenAI(
+            api_key=os.getenv("OPENAI_API_KEY"),
+            http_client=http_client
+        )
     
     def count_tokens(self, text: str) -> int:
         """텍스트의 토큰 수 계산"""

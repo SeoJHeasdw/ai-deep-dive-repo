@@ -81,7 +81,13 @@ class EmbeddingGenerator:
         - 의미적으로 유사한 텍스트는 유사한 벡터를 갖음
         - 벡터 간의 거리/유사도로 의미적 유사성 측정 가능
         """
-        self.client = OpenAI(api_key=api_key or os.getenv("OPENAI_API_KEY"))
+        import httpx
+        # SSL 인증서 검증 우회 설정 (회사 방화벽 등으로 인한 인증서 문제 해결)
+        http_client = httpx.Client(verify=False)
+        self.client = OpenAI(
+            api_key=api_key or os.getenv("OPENAI_API_KEY"),
+            http_client=http_client
+        )
         self.model = "text-embedding-3-small"
         self.dimensions = 1536  # text-embedding-3-small의 기본 차원
     

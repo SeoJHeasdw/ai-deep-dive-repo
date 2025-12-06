@@ -145,7 +145,10 @@ class IntentClassifierAgent:
     """
     
     def __init__(self, model: str = "gpt-4o-mini"):
-        self.client = OpenAI()
+        import httpx
+        # SSL 인증서 검증 우회 설정 (회사 방화벽 등으로 인한 인증서 문제 해결)
+        http_client = httpx.Client(verify=False)
+        self.client = OpenAI(http_client=http_client)
         self.model = model
         self.name = "IntentClassifier"
         
@@ -234,8 +237,11 @@ class RetrievalAgent:
     """
     
     def __init__(self, persist_directory: str = None, collection_name: str = "agent_rag"):
-        self.embeddings = OpenAIEmbeddings()
-        self.client = OpenAI()
+        import httpx
+        # SSL 인증서 검증 우회 설정
+        http_client = httpx.Client(verify=False)
+        self.embeddings = OpenAIEmbeddings(http_client=http_client)
+        self.client = OpenAI(http_client=http_client)
         self.name = "Retrieval"
         
         if persist_directory is None:
@@ -392,7 +398,10 @@ class SummarizationAgent:
     """
     
     def __init__(self, model: str = "gpt-4o-mini"):
-        self.client = OpenAI()
+        import httpx
+        # SSL 인증서 검증 우회 설정
+        http_client = httpx.Client(verify=False)
+        self.client = OpenAI(http_client=http_client)
         self.model = model
         self.name = "Summarization"
         
@@ -472,7 +481,10 @@ class FinalAnswerAgent:
     """
     
     def __init__(self, model: str = "gpt-4o-mini"):
-        self.client = OpenAI()
+        import httpx
+        # SSL 인증서 검증 우회 설정
+        http_client = httpx.Client(verify=False)
+        self.client = OpenAI(http_client=http_client)
         self.model = model
         self.name = "FinalAnswer"
         
@@ -551,7 +563,10 @@ class OrchestratorAgent:
     """
     
     def __init__(self, model: str = "gpt-4o-mini"):
-        self.client = OpenAI()
+        import httpx
+        # SSL 인증서 검증 우회 설정
+        http_client = httpx.Client(verify=False)
+        self.client = OpenAI(http_client=http_client)
         self.model = model
         self.name = "Orchestrator"
         
@@ -775,7 +790,10 @@ class SimpleRAGAgent:
     """
     
     def __init__(self, model: str = "gpt-4o-mini"):
-        self.client = OpenAI()
+        import httpx
+        # SSL 인증서 검증 우회 설정
+        http_client = httpx.Client(verify=False)
+        self.client = OpenAI(http_client=http_client)
         self.model = model
         self.retriever = RetrievalAgent()
         self.classifier = IntentClassifierAgent(model)  # 분류기 추가
