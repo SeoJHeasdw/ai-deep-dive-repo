@@ -241,6 +241,238 @@ AI 기술의 발전과 함께 윤리적 고려가 중요해지고 있습니다.
 # 최소 텍스트 길이 (이보다 짧으면 SAMPLE_TEXT 사용)
 MIN_TEXT_LENGTH = 2000
 
+# ============================================================================
+# Lab03용: 영어 샘플 텍스트 (Re-ranking 실습 - ms-marco 모델용)
+# ============================================================================
+
+SAMPLE_TEXT_EN = """
+# Complete Guide to Artificial Intelligence and Machine Learning
+
+## Chapter 1: Fundamentals of AI
+
+Artificial Intelligence (AI) is the technology that enables computers to simulate human learning, reasoning, and perception.
+The term "artificial intelligence" was first coined by John McCarthy at the Dartmouth Conference in 1956.
+
+### History of AI
+- 1950s: Alan Turing proposed the Turing Test
+- 1960s: Emergence of expert systems
+- 1980s: Revival of neural network research
+- 2010s: Deep learning revolution and GPU computing
+- 2020s: Era of Large Language Models (LLMs) and Generative AI
+
+### Types of AI
+1. **Narrow AI**: AI specialized for specific tasks. Examples: chess programs, voice recognition
+2. **General AI**: Human-level general intelligence. Still theoretical
+3. **Super AI**: Intelligence surpassing humans. Future possibility
+
+## Chapter 2: Core Concepts of Machine Learning
+
+Machine Learning (ML) is a subfield of AI that learns patterns from data to make predictions.
+The key is that computers learn on their own without explicit programming.
+
+### Types of Machine Learning
+
+#### Supervised Learning
+Learning with labeled data. The model is trained using input-output pairs.
+- **Classification**: Email spam detection, disease diagnosis, image classification
+- **Regression**: House price prediction, sales forecasting, temperature prediction
+- Key algorithms: Linear Regression, Logistic Regression, Decision Trees, Random Forest, SVM, XGBoost
+
+#### Unsupervised Learning
+Discovering patterns in unlabeled data.
+- **Clustering**: Customer segmentation, document grouping
+- **Dimensionality Reduction**: Data visualization, feature compression
+- Key algorithms: K-Means, DBSCAN, PCA, t-SNE, Autoencoder
+
+#### Reinforcement Learning
+Learning by interacting with the environment to maximize rewards.
+- Game AI: AlphaGo, OpenAI Five
+- Robot control: Robot walking, drone flight
+- Recommendation systems: Personalized content recommendations
+- Key algorithms: Q-Learning, DQN, PPO, A3C
+
+## Chapter 3: Deep Learning and Neural Networks
+
+Deep Learning is a technique that stacks multiple layers of artificial neural networks to learn complex patterns.
+The deep learning era began in earnest when AlexNet won the ImageNet competition in 2012.
+
+### Neural Network Structure
+- **Input Layer**: Layer that receives data
+- **Hidden Layers**: Layers that extract and transform features
+- **Output Layer**: Layer that outputs final predictions
+- **Activation Functions**: ReLU, Sigmoid, Tanh, Softmax
+
+### Major Deep Learning Architectures
+
+#### CNN (Convolutional Neural Network)
+A neural network specialized for image processing.
+- Extracts local features using convolutional layers
+- Reduces spatial size using pooling layers
+- Applications: Face recognition, autonomous driving, medical image analysis
+- Representative models: VGGNet, ResNet, EfficientNet
+
+#### RNN (Recurrent Neural Network)
+A neural network suitable for sequential data processing.
+- Passes information from previous states to current
+- LSTM and GRU emerged due to long-term dependency problems
+- Applications: Machine translation, speech recognition, time series prediction
+
+#### Transformer
+Proposed in the 2017 paper "Attention is All You Need".
+- Enables parallel processing with Self-Attention mechanism
+- Represents sequence information with positional encoding
+- Foundation for modern language models like BERT, GPT, T5
+- Applications: Natural language processing, image generation, code generation
+
+## Chapter 4: Natural Language Processing (NLP)
+
+Natural Language Processing (NLP) is the technology that enables computers to understand and generate human language.
+
+### Key NLP Tasks
+- **Text Classification**: Sentiment analysis, spam detection, topic classification
+- **Named Entity Recognition (NER)**: Extracting person names, locations, organization names
+- **Machine Translation**: English-Korean, multilingual translation
+- **Question Answering (QA)**: Document-based answer generation
+- **Text Summarization**: Document summarization, news summarization
+- **Dialogue Systems**: Chatbots, virtual assistants
+
+### Large Language Models (LLM)
+Models with billions of parameters like GPT, Claude, and Gemini.
+- **Pre-training**: Learning language patterns from large-scale text
+- **Fine-tuning**: Additional training for specific tasks
+- **Prompt Engineering**: Effective input design
+- **RAG (Retrieval-Augmented Generation)**: Utilizing external knowledge
+
+## Chapter 5: RAG (Retrieval-Augmented Generation)
+
+RAG is a technology that complements the limitations of large language models.
+It generates accurate and up-to-date answers by retrieving external documents and providing them to the LLM.
+
+### Why RAG is Needed
+1. **Preventing Hallucination**: Generating answers based on facts
+2. **Reflecting Latest Information**: Using information after the training cutoff
+3. **Domain Specialization**: Answers based on specific domain documents
+4. **Cost Efficiency**: Updating knowledge without retraining
+
+### RAG Pipeline
+1. **Document Collection**: Loading documents from PDFs, web pages, databases
+2. **Chunking**: Splitting documents into appropriate sizes
+3. **Embedding**: Converting text to vectors
+4. **Indexing**: Storing in vector databases
+5. **Retrieval**: Searching for documents similar to the query
+6. **Generation**: Generating answers based on retrieved documents
+
+### Search Method Comparison
+- **Sparse Search (BM25)**: Keyword-based, strong at exact word matching
+- **Dense Search (Vector)**: Meaning-based, strong at understanding synonyms and context
+- **Hybrid Search**: Combining advantages of both methods
+
+### Advanced RAG Techniques
+- **Re-ranking**: Re-ordering initial search results
+- **Multi-hop Search**: Handling questions requiring multi-step reasoning
+- **Query Expansion**: Improving search quality through query expansion
+- **Contextual Compression**: Optimizing context by extracting only relevant parts
+
+## Chapter 6: Computer Vision
+
+Computer Vision is the technology that enables computers to understand images and videos.
+
+### Key Tasks
+- **Image Classification**: Classifying objects in photos
+- **Object Detection**: Detecting object locations and types
+- **Semantic Segmentation**: Pixel-level classification
+- **Pose Estimation**: Estimating human joint positions
+- **Face Recognition**: Identity verification, emotion analysis
+
+### Application Areas
+- Autonomous driving: Lane recognition, pedestrian detection
+- Medical: X-ray analysis, lesion detection
+- Manufacturing: Defect detection, quality control
+- Security: CCTV analysis, abnormal behavior detection
+
+## Chapter 7: Generative AI
+
+Generative AI is AI that creates new content.
+
+### Types of Generative Models
+- **GAN (Generative Adversarial Network)**: Competition between generator and discriminator
+- **VAE (Variational Autoencoder)**: Generation from latent space
+- **Diffusion Model**: Generation through noise removal process
+- **Transformer-based**: GPT, DALL-E, Stable Diffusion
+
+### Application Areas
+- **Text Generation**: Writing assistance, code generation, translation
+- **Image Generation**: Art creation, product design, advertising
+- **Music/Audio**: Composition, voice synthesis
+- **Video Generation**: Animation, special effects
+
+## Chapter 8: AI Ethics and Responsibility
+
+Ethical considerations are becoming important along with AI technology advancement.
+
+### Key Issues
+- **Bias**: Training data bias reflected in results
+- **Privacy**: Balance between personal information protection and data utilization
+- **Job Changes**: Occupational structure changes due to automation
+- **Misuse Potential**: Deepfakes, misinformation generation
+- **Explainability**: Transparency of AI decisions
+
+### AI Governance
+- EU AI Act: Risk-based regulatory framework
+- US AI Executive Order: Safe and trustworthy AI
+- Korea AI Legislation: Promoting AI Basic Law
+
+## Chapter 9: AI Development Tools and Frameworks
+
+### Python Libraries
+- **NumPy**: Foundation for numerical computation
+- **Pandas**: Data analysis and manipulation
+- **Scikit-learn**: Traditional machine learning algorithms
+- **TensorFlow/Keras**: Google's deep learning framework
+- **PyTorch**: Facebook's deep learning framework, popular for research
+- **Hugging Face Transformers**: Pre-trained model hub
+
+### Vector Databases
+- **Chroma**: Lightweight, suitable for local development
+- **Pinecone**: Cloud-based, managed service
+- **Weaviate**: Open source, various module support
+- **Milvus**: Optimized for large-scale data processing
+- **Qdrant**: High-performance similarity search
+
+### LLM Development Tools
+- **LangChain**: LLM application development framework
+- **LlamaIndex**: Specialized in data connection and retrieval
+- **OpenAI API**: Access to GPT models
+- **Anthropic API**: Access to Claude models
+
+## Chapter 10: Practical Application Guide
+
+### Project Stages
+1. **Problem Definition**: Setting business goals and AI application scope
+2. **Data Collection**: Acquiring and cleaning necessary data
+3. **Model Selection**: Selecting appropriate model for the task
+4. **Training and Evaluation**: Model training and performance measurement
+5. **Deployment**: Applying to production environment
+6. **Monitoring**: Performance tracking and continuous improvement
+
+### Success Factors
+- Clear goal setting
+- Securing quality data
+- Iterative experimentation and improvement
+- Collaboration with domain experts
+- Reflecting ethical considerations
+
+### Common Mistakes
+- Ignoring data quality
+- Overfitting problems
+- Wrong evaluation metric selection
+- Not considering scalability
+- Lack of maintenance planning
+
+This guide helps you understand the core concepts of AI and machine learning,
+and successfully execute AI projects in practice.
+"""
+
 
 def get_sample_or_document_text(document_text: str = None) -> tuple:
     """
